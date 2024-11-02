@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert, FlatList } from 'react-native';
 import questionsData from './assets/questions.json';
 
 type Question = {
@@ -34,17 +34,28 @@ export default function App() {
   if (!currentQuestion) {
     return (
       <View style={styles.container}>
-        <Text>Loading question...</Text>
+        <Text style={styles.questionText}>Loading question...</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Text>{currentQuestion.question}</Text>
-      {currentQuestion.answers.map((answer, index) => (
-        <Button key={index} title={answer} onPress={() => handleAnswer(index)} />
-      ))}
+      <Text style={styles.questionText}>{currentQuestion.question}</Text>
+      <FlatList
+        data={currentQuestion.answers}
+        renderItem={({ item, index }) => (
+          <TouchableOpacity
+            key={index}
+            style={[styles.button, styles.additionalButtonSpacing]}
+            onPress={() => handleAnswer(index)}
+          >
+            <Text style={styles.buttonText}>{item}</Text>
+          </TouchableOpacity>
+        )}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={styles.buttonsContainer}
+      />
       <StatusBar style="auto" />
     </View>
   );
@@ -58,5 +69,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
+  questionText: {
+    fontSize: 24,
+    marginTop: 40, // Added padding to move the question text down
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  buttonsContainer: {
+    width: '100%',
+  },
+  button: {
+    backgroundColor: '#000000',
+    paddingVertical: 10,
+    width: '100%', // Ensure full width
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 15,
+    textAlign: 'center', // Center text within the button
+  },
+  additionalButtonSpacing: {
+    marginVertical: 10, // Added more space between answer buttons
+  },
 });
-
