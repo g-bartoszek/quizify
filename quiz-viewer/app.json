@@ -6,6 +6,9 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "packagerOpts": {
+      "config": "metro.config.js"
+    },
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -18,10 +21,24 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.boocho.quizviewer"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "81efefda-1544-4eb0-91ed-d6c825a99a51"
+      }
+    },
+    "plugins": [
+      [
+        "expo-asset",
+        {
+          "assets": ["./assets/questions.json"]
+        }
+      ]
+    ]
   }
 }
