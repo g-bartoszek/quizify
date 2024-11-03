@@ -64,17 +64,10 @@ def main():
 def get_questions(chapter):
     response = ask_chat("""I'll give you a chapter of a technical book. Based on this chapter create a list of quiz questions
                         one can use to study the chapter. Each question should consist of a question and four possible answers.
-                        Make the answers sound plausible so that the questions are not easy to answer.
-
-                        Output the questions as a valid json in the follwoing format:
-                        List of items where each item is:
-                        question: text,
-                        answers: list of 4 answers
-                        correct: index of the correct answer
-                        explanation: explanation on why the answer is correct based on the contents of the chapter
-
+                        Make the answers sound plausible so that the questions are not easy to answer. Make the questions detailed.
+                        It's ok for the questions and responses to consist of multiple sentences.
                         Ignore meanignleass chapters like table of contents or preface, return an empty list for them.
-                        The questions should be about the discussed subject not about the exact content so don't ask about pages, chapters or authors.
+                        The questions should be about the discussed subject not about the exact content.
 
                         Example of a good question:
                         "Which of the following components is typically NOT a standard building block for data-intensive applications?
@@ -83,6 +76,13 @@ def get_questions(chapter):
                         "Which aspect is primarily discussed in Chapter 2?"
 
                         Try to come up with 10 to 20 questions if possible.
+
+                        Output the questions as a valid json in the follwoing format:
+                        List of items where each item is:
+                        question: text,
+                        answers: list of 4 answers
+                        correct: index of the correct answer
+                        explanation: explanation on why the answer is correct based on the contents of the chapter
 
                         Chapter text:
                         """ + chapter)
