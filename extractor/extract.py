@@ -3,13 +3,12 @@ import pymupdf  # PyMuPDF
 from dotenv import load_dotenv
 from openai import OpenAI
 import json
+import os
 
 load_dotenv()
 
-client = OpenAI(organization="org-c0kigYrtAAhLNdilnkXa66rF",
-                project="proj_m5GVH74nhIWA0ryjXH1t2YDz")
 
-def ask_chat(prompt_text):
+def ask_chat(prompt_text: str, client: OpenAI):
 
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
@@ -30,7 +29,8 @@ def main():
         sys.exit(1)
 
     pdf_path = sys.argv[1]
-
+    
+    client = OpenAI(organization=os.getenv("OPENAI_ORG"), project=os.getenv("OPENAI_PROJECT"))
 
     try:
         document = pymupdf.open(pdf_path)
@@ -48,10 +48,10 @@ def main():
                 page_text = document.load_page(page_num).get_text()
                 chapter_text += page_text + "\n"
 
-            resp = get_questions(chapter_text)
+            resp = get_questions(chapter_text, client)
             parsed = parse_questions(resp)
 
-            questions.append(parsed)
+            questions.extend(parsed)
 
 
         with open('questions.json', 'w') as f:
@@ -61,7 +61,7 @@ def main():
         print(f"Error: {e}")
 
 
-def get_questions(chapter):
+def get_questions(chapter: str, client: OpenAI):
     response = ask_chat("""I'll give you a chapter of a technical book. Based on this chapter create a list of quiz questions
                         one can use to study the chapter. Each question should consist of a question and four possible answers.
                         Make the answers sound plausible so that the questions are not easy to answer. Make the questions detailed.
@@ -85,7 +85,7 @@ def get_questions(chapter):
                         explanation: explanation on why the answer is correct based on the contents of the chapter
 
                         Chapter text:
-                        """ + chapter)
+                        """ + chapter, client)
 
     print(response)
     return response
